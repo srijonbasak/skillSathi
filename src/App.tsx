@@ -5,15 +5,12 @@ import MobileActionBar from './components/navigation/MobileActionBar';
 import AppRoutes from './routes/AppRoutes';
 import AICompanion from './components/ai/AICompanion';
 import { useTranslation } from 'react-i18next';
-import { useAppStore } from './store/useAppStore';
 
 const App = () => {
   const { t } = useTranslation();
   const location = useLocation();
-  const userRole = useAppStore((state) => state.user?.role);
   const isProviderArea = location.pathname.startsWith('/p');
-  const allowedBots: ('sathi' | 'sokti')[] =
-    userRole === 'provider' && isProviderArea ? ['sokti'] : ['sathi'];
+  const allowedBots: ('sathi' | 'sokti')[] = isProviderArea ? ['sokti'] : ['sathi'];
 
   return (
     <>
