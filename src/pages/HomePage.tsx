@@ -192,13 +192,13 @@ const HomePage = () => {
           {t('pages.home.personaSection.body')}
         </Typography>
         <Grid container spacing={3}>
-          {personaCards.map((card, index) => (
+          {personaCards.map((card) => (
             <Grid item xs={12} md={6} key={card.key}>
               <Box
                 sx={{
                   ...frostedCard,
-                  minHeight: 280,
-                  borderTop: `4px solid ${index === 0 ? '#2563EB' : '#FF4D6D'}`
+                  minHeight: 260,
+                  borderTop: `3px solid ${card.accent}`
                 }}
               >
                 <Chip
@@ -207,7 +207,9 @@ const HomePage = () => {
                     alignSelf: 'flex-start',
                     borderRadius: 2,
                     fontWeight: 600,
-                    px: 1.5
+                    px: 1.5,
+                    backgroundColor: `${card.accent}15`,
+                    color: card.accent
                   }}
                 />
                 <Typography variant="h4" fontWeight={700}>
