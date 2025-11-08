@@ -1,0 +1,13 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { Navigate, Route, Routes } from 'react-router-dom';
+import HomePage from '@/pages/HomePage';
+import RegisterPage from '@/pages/RegisterPage';
+import LoginPage from '@/pages/LoginPage';
+import ProviderDashboardPage from '@/pages/ProviderDashboardPage';
+import GigCreatorPage from '@/pages/GigCreatorPage';
+import ClientDashboardPage from '@/pages/ClientDashboardPage';
+import BuyerRequestPage from '@/pages/BuyerRequestPage';
+import WalletPage from '@/pages/WalletPage';
+import ChatPage from '@/pages/ChatPage';
+const AppRoutes = () => (_jsxs(Routes, { children: [_jsx(Route, { path: "/", element: _jsx(HomePage, {}) }), _jsx(Route, { path: "/register", element: _jsx(RegisterPage, {}) }), _jsx(Route, { path: "/login", element: _jsx(LoginPage, {}) }), _jsx(Route, { path: "/p/dashboard", element: _jsx(ProviderDashboardPage, {}) }), _jsx(Route, { path: "/p/gig/new", element: _jsx(GigCreatorPage, {}) }), _jsx(Route, { path: "/c/dashboard", element: _jsx(ClientDashboardPage, {}) }), _jsx(Route, { path: "/c/request/new", element: _jsx(BuyerRequestPage, {}) }), _jsx(Route, { path: "/wallet", element: _jsx(WalletPage, {}) }), _jsx(Route, { path: "/chat", element: _jsx(ChatPage, {}) }), _jsx(Route, { path: "*", element: _jsx(Navigate, { to: "/", replace: true }) })] }));
+export default AppRoutes;

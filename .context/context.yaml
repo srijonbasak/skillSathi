@@ -1,0 +1,381 @@
+# =====================================================================
+# SkillSathi • context.yaml
+# Single source of truth for UX, UI, i18n, AI behaviors, security, and
+# acceptance criteria. Follow this file when extending the frontend.
+# =====================================================================
+
+project:
+  name: "SkillSathi"
+  tagline: "Turning hidden talents into income — one gig at a time."
+  mission: "AI-powered platform enabling Bangladeshi women to earn safely via locally relevant, Bangla-first experiences."
+  alignment:
+    women_first: true                 # privacy, control, choice
+    ai_visible_and_optional: true     # AI Assist is explicit and explainable
+    bangla_first: true                # bn default, en fallback
+    instant_earnings: true            # wallet + local fintech integration (mock)
+    masked_chat_by_default: true
+  derived_from_pitch_notes:
+    - "Auto-Draft AI, Multilingual NLP, Smart Pricing, Fraud Detector, Learning Loop"   # deck features
+    - "Buyer voice input (Bangla), safe/Masked chat, instant payouts (bKash/SSLCommerz)"
+    - "Pilot Dhaka, expand nationwide"
+  non_goals:
+    - "No public phone/email sharing in chat"
+    - "No complex gig marketplace features (bidding/escrow) in MVP"
+
+stakeholders:
+  product_owner: "Team Kamikaze"
+  design_owner: "UI/UX lead"
+  eng_owner: "Frontend lead (MERN-ready)"
+  compliance_owner: "Data & safety steward"
+  community_owner: "Mentorship & trust programs"
+
+personas:
+  provider_woman:
+    name: "Runa"
+    age: "22–45"
+    needs: ["earn from home", "safety first", "Bangla UI", "easy pricing"]
+    barriers: ["tech confidence", "language", "unsafe messaging"]
+  buyer_client:
+    name: "Sami"
+    org: "Individual/SME/NGO"
+    needs: ["reliable help", "transparent price", "quick request flow"]
+
+localization_i18n:
+  default_lang: "bn"
+  supported: ["bn", "en"]
+  requirements:
+    - "All visible strings use i18n keys (no hard-coded copy)"
+    - "Validation messages available in bn & en"
+    - "Numeral handling: allow Latin numerals; display currency as BDT"
+  voice_input:
+    lang: "bn-BD"
+    tech: "Web Speech API with graceful fallback to textarea"
+    accessibility: "Provide keyboard alternative & label"
+  date_time_number_format:
+    currency: "BDT"
+    thousand_separator: ","
+    decimal_separator: "."
+
+brand_design_system:
+  logo: "public/logo.png" # replace with final asset
+  colors:
+    primary: "#8A2BE2"         # violet
+    secondary: "#FF4D6D"       # coral
+    accent: "#FF6F91"
+    neutral_900: "#111827"
+    neutral_600: "#6B7280"
+    surface: "#FFFFFF"
+    background: "#FAFAFB"
+    success: "#10B981"
+    warning: "#F59E0B"
+    error: "#EF4444"
+  typography:
+    latin: "Inter"
+    bangla: "Noto Sans Bengali"
+    base_size_px: 16
+    scale_px: [12,14,16,18,20,24,28,32,40]
+  spacing:
+    unit_px: 8
+    radii_px: { sm: 8, md: 12, lg: 16, xl: 24 }
+  components:
+    button:
+      heights_px: { sm: 40, md: 44, lg: 48 }
+      variants: ["solid","outline","ghost"]
+    chip_ai:
+      icon: "Psychology"
+      color: "secondary"
+      label_key: "aiAssist"
+    inputs:
+      min_tap_target_px: 44
+      helper_text_style: "subtle, concise, localized"
+    navbar:
+      includes: ["brand", "language_switcher", "auth_cta"]
+    mobile_bottom_bar:
+      enabled: true
+      items_by_role:
+        provider: ["create_gig","wallet","chat"]
+        client: ["new_request","wallet","chat"]
+
+accessibility_a11y:
+  compliance_target: "WCAG 2.1 AA"
+  requirements:
+    - "Color contrast >= 4.5:1 for text"
+    - "Visible focus indicators"
+    - "ARIA labels on voice button, AI controls, tabs"
+    - "Form error summary with anchors after submit"
+    - "Role=log for chat messages; announce new message"
+    - "No keyboard traps; all actions keyboard accessible"
+
+security_privacy:
+  pii_fields: ["phone","nid","wallet_number","email","address"]
+  masking:
+    chat_phone_email_masked: true
+  safety_controls:
+    panic_button: { visible: true, confirm_dialog: true, action: "block_and_report" }
+  content_moderation_client_side_hints:
+    - "Warn if user tries to share phone/email in chat"
+  storage_guidance:
+    - "When backend exists, store PII encrypted at rest; never render raw phone in chat UIs"
+  fraud_spam:
+    simple_client_rules:
+      - "Block messages containing repeated phone/email patterns"
+      - "Rate-limit consecutive sends (UI throttle)"
+  legal_copy:
+    consent:
+      language: ["bn","en"]
+      placement: ["register", "first-chat", "wallet"]
+
+performance:
+  budgets:
+    tti_3g_target_ms: 2500
+    js_bundle_gzip_kb: 200
+    image_lazy_load: true
+  code_splitting:
+    routes: ["/p/gig/new","/c/request/new","/wallet","/chat"]
+
+analytics:
+  provider_events: ["register_submit","ai_draft_clicked","ai_price_suggested","gig_publish","panic_clicked"]
+  client_events: ["register_submit","voice_started","ai_request_drafted","request_posted"]
+  funnels:
+    - name: "Provider onboarding"
+      steps: ["Open Register","Provider Tab","Valid Submit","Create Gig","First Chat"]
+    - name: "Client onboarding"
+      steps: ["Open Register","Client Tab","Valid Submit","Create Request","First Chat"]
+
+tech_stack_frontend:
+  base: ["React 18","Vite","MUI","React Router","Zustand","react-hook-form","Yup","i18next"]
+  ai_mock: "src/services/mockAi.js (replace later with API)"
+  data_samples:
+    locations: "src/data/locations.js (Division→District→Upazila)"
+    skills: "src/data/skills.js"
+  state_shape:
+    user: "{role:'provider'|'client', name:string}"
+    wallet: "{balance:number, history:[{id,delta,type,method}]}"
+  feature_flags:
+    voice_input: true
+    ai_price_suggestion: true
+    ai_draft: true
+    masked_chat: true
+
+routing_information_architecture:
+  public:
+    - { path: "/", name: "home" }
+    - { path: "/register", name: "register" }
+    - { path: "/login", name: "login" }
+  provider:
+    - { path: "/p/dashboard", name: "provider_dashboard" }
+    - { path: "/p/gig/new", name: "gig_creator" }
+  client:
+    - { path: "/c/dashboard", name: "client_dashboard" }
+    - { path: "/c/request/new", name: "buyer_request" }
+  shared:
+    - { path: "/wallet", name: "wallet" }
+    - { path: "/chat", name: "chat" }
+
+domain_models_and_schemas:
+  provider_registration:
+    mandatory:
+      - { key: nameBn, label_bn: "পূর্ণ নাম (বাংলা)", type: "text", max: 80 }
+      - { key: nameEn, label_en: "Full name (English)", type: "text", max: 80 }
+      - { key: phone, type: "phone_bd", regex: "^(?:\\+?88)?01[3-9]\\d{8}$", example: "017XXXXXXXX" }
+      - { key: division, type: "select" }
+      - { key: district, type: "select" }
+      - { key: upazila, type: "select" }
+      - { key: area, type: "text", max: 120 }
+      - { key: skills, type: "multiselect", set: "SKILLS", min: 1 }
+      - { key: wallet, label: "bKash/Nagad", type: "phone_bd" }
+    optional:
+      - { key: email, type: "email" }
+      - { key: nid, type: "text", regex: "^(\\d{10}|\\d{13}|\\d{17})$", help_bn: "10/13/17 ডিজিট" }
+    safety:
+      masked_chat_default: true
+      emergency_contact: { enabled: true, type: "phone_bd" }
+    success_criteria:
+      - "All validations pass in bn & en"
+      - "Helpful helper_text for phone/NID/wallet"
+  client_registration:
+    mandatory:
+      - { key: name, type: "text" }
+      - { key: type, enum: ["individual","sme","ngo","company"] }
+      - { key: phone, type: "phone_bd", regex: "^(?:\\+?88)?01[3-9]\\d{8}$" }
+      - { key: division, type: "select" }
+      - { key: district, type: "select" }
+      - { key: upazila, type: "text" }
+    optional:
+      - { key: email, type: "email" }
+  gig:
+    fields:
+      - { key: skill, type: "select", set: "SKILLS" }
+      - { key: title, type: "text", max: 80 }
+      - { key: description, type: "textarea", max: 1500 }
+      - { key: price_bdt, type: "number", min: 100 }
+  buyer_request:
+    fields:
+      - { key: free_text, type: "textarea", required: true }
+      - { key: ai_output, type: "textarea" }
+
+ai_behaviors:
+  assist_chip:
+    label_key: "aiAssist"
+    pattern: "prominent pill near inputs; opens suggestion inline; one-click apply"
+  draft_gig_from_hint:
+    input: ["skill","free_text"]
+    output: ["title","description"]
+    ux_rules:
+      - "Show spinner ≤ 1s latency mock"
+      - "Present diffs (what changed) using subtle highlight"
+      - "Never overwrite user text without confirmation"
+  price_suggestion:
+    input: ["skill","location (optional)"]
+    output: ["price_bdt"]
+    ux_rules:
+      - "Show confidence note and allow edit"
+  safety_ai_hinting:
+    chat:
+      - "Detect phone/email patterns → show warning banner (client-only heuristic)"
+  integration_plan:
+    endpoints_planned:
+      - { method: "POST", url: "/ai/draft", body: "{hint, role}" }
+      - { method: "POST", url: "/ai/price", body: "{skill, geo}" }
+    error_handling:
+      - "Surface non-blocking error toast"
+      - "Keep user’s text intact"
+      - "Provide Retry"
+
+wallet_and_payments (mock):
+  providers: ["bKash","Nagad","Rocket"]
+  withdraw_flow:
+    inputs: ["wallet_number (bd phone format)"]
+    validations: ["phone regex", "min withdraw amount"]
+    success_ui: "toast + history row"
+  future_api:
+    - { method: "POST", url: "/wallet/withdraw", body: "{amount, method, msisdn}" }
+
+chat_spec:
+  defaults:
+    masked_contact: true
+    panic_button: { position: "composer_trailing", color: "error" }
+  moderation_hints:
+    phone_email_detection_regex:
+      phone: "(?:\\+?88)?01[3-9]\\d{8}"
+      email: "[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}"
+    actions_on_violation: ["inline warning", "block send (optional flag)"]
+
+navigation_copy_rules:
+  headings:
+    home_h1: "SkillSathi — AI Platform Empowering Women"
+  tone:
+    - "Respectful, encouraging, plain Bangla"
+    - "Avoid jargon; show examples"
+  microcopy_examples_bn:
+    phone_helper: "১১ ডিজিট নম্বর, যেমন ০১৭XXXXXXXX"
+    wallet_helper: "বিকাশ/নগদ নম্বর (ব্যক্তিগত অ্যাকাউন্ট)"
+
+qa_acceptance_criteria:
+  must_have:
+    - "Bangla default, English toggle works on every page"
+    - "Provider & Client forms validate BD phone + NID per regex"
+    - "AI Assist visible on Gig Creator and Buyer Request and returns mock outputs"
+    - "Chat masks phone/email and shows Panic button"
+    - "Wallet mock withdraw updates balance/history"
+    - "Voice input falls back gracefully when unsupported"
+  nice_to_have:
+    - "Skeleton loaders and empty states"
+    - "Price suggestion varies by skill"
+  demo_script:
+    - "Register as Provider → Create Gig using AI → Open Chat"
+    - "Register as Client → Voice request → AI draft → Post"
+
+testing_plan:
+  unit_tests:
+    - "Phone/NID validators"
+    - "AI reducers (apply suggestion preserves user text)"
+  e2e_happy_paths:
+    - "Provider registration + gig publish"
+    - "Client registration + request post"
+    - "Chat panic flow"
+  a11y_checks:
+    - "Keyboard-only traversal of forms and chat"
+    - "ARIA labels present on voice/AI buttons"
+
+release_process:
+  environments: ["dev","staging","prod"]
+  feature_toggles: ["voice_input","ai_draft","ai_price_suggestion"]
+  telemetry:
+    - "Console errors must be 0 in staging smoke test"
+    - "Lighthouse ≥ 90 performance/accessibility"
+
+prompts_master_7_iterations:
+  # Use these prompts with your design/code copilot to produce/iterate pages.
+  home:
+    - "Wireframe a responsive Home with left hero (title, subtitle, CTA) and right AI demo card using brand tokens."
+    - "Write simple Bangla-first copy about women-first, safe chat, instant payouts."
+    - "Add AI Assist chip in demo illustrating auto-draft and price suggestion; include tooltip."
+    - "Implement language toggle header; ensure copy comes from i18n keys."
+    - "Optimize for mobile: stack sections, full-width CTAs, ≥44px tap targets."
+    - "Add a11y: heading hierarchy, aria-labels, focus order; test screen reader."
+    - "QA: switch bn/en; simulate slow network; ensure no layout shift."
+  register:
+    - "Create tabs: Provider (default) and Client."
+    - "Provider fields: nameBn, nameEn, phone, division, district, upazila, area, skills[], wallet; optional email, nid."
+    - "Validate BD phone/NID with regex; inline errors in Bangla and error summary after submit."
+    - "Explain sensitive fields with short helper text; show masked chat note."
+    - "Make numeric inputs use tel keypad on mobile; ensure aria-describedby on errors."
+    - "Localize all strings; test English fallback."
+    - "QA keyboard-only completion; successful submit shows mock success and logs event."
+  provider_dashboard:
+    - "Design 3 cards: Create Gig, Open Chat, Wallet; add 'Boost trust: add NID' banner."
+    - "List 3 recommended requests nearby (placeholder)."
+    - "Empty states & skeletons for slow data."
+    - "Focus order and aria-labels for cards."
+    - "Localize microcopy."
+    - "QA: navigate to Gig Creator and back."
+    - "Measure CTR on Create Gig card."
+  gig_creator:
+    - "Layout fields: skill, title, description, price; sticky action bar on mobile."
+    - "Add AI Assist to draft title/description from skill; place near inputs."
+    - "Add Suggest Price button; show tooltip about data-based pricing."
+    - "Show diff/changed text with highlight; allow undo."
+    - "Validate required fields; prevent blank publish; show success toast."
+    - "Localize; ensure Bangla numerals acceptable in price display."
+    - "QA: AI fails → show retry; user text preserved."
+  client_dashboard:
+    - "Card to Post Request + list of open requests."
+    - "Status chips (active/completed) and quick filters."
+    - "Localize and add empty state."
+    - "Keyboard navigation end-to-end."
+    - "Performance: list virtualization if >20 items."
+    - "A11y announce counts."
+    - "QA: open Request Composer."
+  buyer_request:
+    - "Textarea for need; VoiceInput (bn-BD); AI Assist to clarify and structure."
+    - "Add price range field; confirm modal before post."
+    - "Voice button requires aria-label and fallback message."
+    - "Localize every label and validation."
+    - "Autosave draft locally."
+    - "A11y live region for AI output."
+    - "QA: voice path, typed path, AI path."
+  wallet:
+    - "Show balance and withdraw to bKash/Nagad; record in history."
+    - "Validate wallet number with BD phone regex."
+    - "Toast success/failure (mock)."
+    - "Localize currency prefix '৳'."
+    - "Live region for transaction confirmation."
+    - "Skeleton on load."
+    - "QA: multiple withdrawals update history properly."
+  chat:
+    - "Two-pane desktop / single-pane mobile."
+    - "Banner: 'Phone numbers are hidden by default'; Panic button prominent."
+    - "Client-side hint if message includes phone/email; allow send with warning toggle."
+    - "Role=log, announce new messages; timestamps and mock read receipts."
+    - "Localize all microcopy."
+    - "Keyboard shortcuts (Enter to send)."
+    - "QA: panic flow blocks & reports conversation (mock)."
+
+glossary:
+  ai_assist: "A visible chip/button that triggers AI to draft or suggest content."
+  masked_chat: "Chat where phone/email are hidden; platform relays messages."
+  bn: "Bangla language code"
+  wallet: "Mobile money account number (bKash/Nagad/Rocket)"
+
+# End of context.yaml
