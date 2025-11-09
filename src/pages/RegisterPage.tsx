@@ -105,8 +105,8 @@ const RegisterVisualCards = ({
     backgroundColor: '#fff',
     p: 3,
     cursor: 'pointer',
-    transition: 'all 0.25s ease',
-    boxShadow: '0 20px 48px rgba(15,23,42,0.12)'
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    boxShadow: '0 8px 24px rgba(15,23,42,0.08)'
   };
 
   return (
@@ -126,26 +126,31 @@ const RegisterVisualCards = ({
                   ? 'linear-gradient(135deg, #fff 0%, #FFF0F5 100%)'
                   : 'linear-gradient(135deg, #fff 0%, #EFF6FF 100%)',
               transform: isActive ? 'translateY(-6px)' : 'none',
-              boxShadow: isActive ? `0 28px 60px ${path.accent}25` : visualCardBase.boxShadow,
+              boxShadow: isActive ? `0 20px 48px ${alpha(path.accent, 0.25)}` : visualCardBase.boxShadow,
               '&:hover': {
                 borderColor: path.accent,
                 transform: 'translateY(-6px)',
-                boxShadow: `0 28px 60px ${path.accent}25`
+                boxShadow: `0 20px 48px ${alpha(path.accent, 0.25)}`
               }
             }}
           >
             <Stack direction="row" spacing={2} alignItems="flex-start">
               <Box
                 sx={{
-                  width: 48,
-                  height: 48,
+                  width: 56,
+                  height: 56,
                   borderRadius: 2,
                   bgcolor: `${path.accent}15`,
                   color: path.accent,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  flexShrink: 0
+                  flexShrink: 0,
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    transform: 'scale(1.1)',
+                    bgcolor: `${path.accent}25`
+                  }
                 }}
               >
                 {path.icon}
@@ -159,7 +164,8 @@ const RegisterVisualCards = ({
                     bgcolor: `${path.accent}15`,
                     color: path.accent,
                     fontWeight: 600,
-                    height: 24
+                    height: 26,
+                    px: 1.5
                   }}
                 />
                 <Typography variant="h6" sx={{ mb: 0.5, fontWeight: 600 }}>
@@ -237,15 +243,23 @@ const RegisterPage = () => {
   const frostedCard = {
     borderRadius: 4,
     border: '1px solid rgba(15,23,42,0.08)',
-    backgroundColor: 'rgba(255,255,255,0.92)',
-    boxShadow: '0 32px 90px rgba(15,23,42,0.15)',
-    backdropFilter: 'blur(18px)'
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    boxShadow: '0 20px 60px rgba(15,23,42,0.12)',
+    backdropFilter: 'blur(20px)'
   };
 
   const inputStyles = {
     '& .MuiOutlinedInput-root': {
       borderRadius: 2,
-      backgroundColor: 'rgba(248,250,252,0.9)'
+      backgroundColor: 'rgba(248,250,252,0.95)',
+      transition: 'all 0.3s ease',
+      '&:hover': {
+        backgroundColor: 'rgba(248,250,252,1)'
+      },
+      '&.Mui-focused': {
+        backgroundColor: '#fff',
+        boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+      }
     }
   };
 
@@ -254,10 +268,22 @@ const RegisterPage = () => {
       sx={{
         minHeight: '100vh',
         py: { xs: 6, md: 10 },
-        background: 'linear-gradient(135deg, #FFF5F7 0%, #F8FBFF 55%, #EEF2FF 100%)'
+        background: 'linear-gradient(135deg, #FFF5F7 0%, #F8FBFF 55%, #EEF2FF 100%)',
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'radial-gradient(circle at 20% 50%, rgba(255,77,109,0.05) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(14,165,233,0.05) 0%, transparent 50%)',
+          pointerEvents: 'none',
+          zIndex: 0
+        }
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         <Grid container spacing={6} alignItems="flex-start">
           <Grid item xs={12} md={7}>
             <Stack spacing={3}>
@@ -266,15 +292,29 @@ const RegisterPage = () => {
                 size="small"
                 sx={{
                   alignSelf: 'flex-start',
-                  bgcolor: 'primary.50',
+                  bgcolor: alpha(theme.palette.primary.main, 0.1),
                   color: 'primary.main',
-                  fontWeight: 600
+                  fontWeight: 600,
+                  px: 2,
+                  py: 0.5,
+                  borderRadius: 2
                 }}
               />
-              <Typography variant="h1" sx={{ fontSize: { xs: '2.5rem', md: '3.5rem' }, fontWeight: 800, lineHeight: 1.2 }}>
+              <Typography
+                variant="h1"
+                sx={{
+                  fontSize: { xs: '2.5rem', md: '3.5rem' },
+                  fontWeight: 800,
+                  lineHeight: 1.2,
+                  background: `linear-gradient(135deg, ${theme.palette.text.primary} 0%, ${alpha(theme.palette.primary.main, 0.8)} 100%)`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
                 {t('pages.register.title')}
               </Typography>
-              <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 400, maxWidth: 600 }}>
+              <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 400, maxWidth: 600, lineHeight: 1.7 }}>
                 {t('ai.helper')}
               </Typography>
             </Stack>
@@ -306,20 +346,27 @@ const RegisterPage = () => {
                 '& .MuiTabs-indicator': {
                   display: 'none'
                 },
-                '& .MuiTab-root': {
-                  fontSize: '1rem',
-                  fontWeight: 600,
-                  textTransform: 'none',
-                  borderRadius: 999,
-                  minHeight: 'auto',
-                  py: 1.25,
-                  px: 3,
-                  color: 'text.secondary'
-                },
-                '& .Mui-selected': {
-                  color: activeTab === 'client' ? '#0EA5E9' : '#FF4D6D',
-                  backgroundColor: activeTab === 'client' ? 'rgba(14,165,233,0.14)' : 'rgba(255,77,109,0.18)'
-                }
+                  '& .MuiTab-root': {
+                    fontSize: '1rem',
+                    fontWeight: 600,
+                    textTransform: 'none',
+                    borderRadius: 2,
+                    minHeight: 'auto',
+                    py: 1.5,
+                    px: 3,
+                    color: 'text.secondary',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      bgcolor: alpha(theme.palette.primary.main, 0.05)
+                    }
+                  },
+                  '& .Mui-selected': {
+                    color: activeTab === 'client' ? '#0EA5E9' : '#FF4D6D',
+                    bgcolor: activeTab === 'client' ? alpha('#0EA5E9', 0.12) : alpha('#FF4D6D', 0.15),
+                    '&:hover': {
+                      bgcolor: activeTab === 'client' ? alpha('#0EA5E9', 0.18) : alpha('#FF4D6D', 0.22)
+                    }
+                  }
               }}
             >
               <Tab
@@ -499,17 +546,21 @@ const RegisterPage = () => {
                       type="submit"
                       variant="contained"
                       size="large"
-                    sx={{
-                      px: 4,
-                      py: 1.5,
-                      fontSize: '1rem',
-                      fontWeight: 600,
-                      borderRadius: 2,
-                      textTransform: 'none',
-                      bgcolor: '#FF4D6D',
-                      '&:hover': {
-                        bgcolor: '#E63E60'
-                      }
+                      sx={{
+                        px: 4,
+                        py: 1.75,
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        borderRadius: 2,
+                        textTransform: 'none',
+                        bgcolor: '#FF4D6D',
+                        boxShadow: `0 8px 24px ${alpha('#FF4D6D', 0.3)}`,
+                        '&:hover': {
+                          bgcolor: '#E63E60',
+                          transform: 'translateY(-2px)',
+                          boxShadow: `0 12px 32px ${alpha('#FF4D6D', 0.4)}`
+                        },
+                        transition: 'all 0.3s ease'
                       }}
                     >
                       {t('pages.register.submit')}
@@ -602,17 +653,21 @@ const RegisterPage = () => {
                       type="submit"
                       variant="contained"
                       size="large"
-                    sx={{
-                      px: 4,
-                      py: 1.5,
-                      fontSize: '1rem',
-                      fontWeight: 600,
-                      borderRadius: 2,
-                      textTransform: 'none',
-                      bgcolor: '#0EA5E9',
-                      '&:hover': {
-                        bgcolor: '#0284C7'
-                      }
+                      sx={{
+                        px: 4,
+                        py: 1.75,
+                        fontSize: '1rem',
+                        fontWeight: 600,
+                        borderRadius: 2,
+                        textTransform: 'none',
+                        bgcolor: '#0EA5E9',
+                        boxShadow: `0 8px 24px ${alpha('#0EA5E9', 0.3)}`,
+                        '&:hover': {
+                          bgcolor: '#0284C7',
+                          transform: 'translateY(-2px)',
+                          boxShadow: `0 12px 32px ${alpha('#0EA5E9', 0.4)}`
+                        },
+                        transition: 'all 0.3s ease'
                       }}
                     >
                       {t('pages.register.submit')}

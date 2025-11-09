@@ -10,7 +10,9 @@ import {
   TextField,
   Typography,
   Alert,
-  Divider
+  Divider,
+  useTheme,
+  alpha
 } from '@mui/material';
 import LockIcon from '@mui/icons-material/LockOutlined';
 import PersonIcon from '@mui/icons-material/Person';
@@ -21,7 +23,6 @@ import { FormEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { phoneRegex } from '@/utils/validators';
-import { useTheme } from '@mui/material/styles';
 
 const LoginVisualCards = () => {
   const { t } = useTranslation();
@@ -53,12 +54,12 @@ const LoginVisualCards = () => {
     backgroundColor: '#fff',
     p: 3,
     cursor: 'pointer',
-    transition: 'all 0.25s ease',
-    boxShadow: '0 18px 40px rgba(15,23,42,0.12)'
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    boxShadow: '0 8px 24px rgba(15,23,42,0.08)'
   };
 
   return (
-    <Stack spacing={2}>
+    <Stack spacing={2.5}>
       {paths.map((path) => (
         <Box
           key={path.key}
@@ -73,22 +74,27 @@ const LoginVisualCards = () => {
             '&:hover': {
               borderColor: path.accent,
               transform: 'translateY(-6px)',
-              boxShadow: `0 24px 60px ${path.accent}30`
+              boxShadow: `0 20px 48px ${alpha(path.accent, 0.25)}`
             }
           }}
         >
           <Stack direction="row" spacing={2} alignItems="flex-start">
             <Box
               sx={{
-                width: 48,
-                height: 48,
-                borderRadius: 1,
+                width: 56,
+                height: 56,
+                borderRadius: 2,
                 bgcolor: `${path.accent}15`,
                 color: path.accent,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                flexShrink: 0
+                flexShrink: 0,
+                transition: 'all 0.3s ease',
+                '&:hover': {
+                  transform: 'scale(1.1)',
+                  bgcolor: `${path.accent}25`
+                }
               }}
             >
               {path.icon}
@@ -102,13 +108,14 @@ const LoginVisualCards = () => {
                   bgcolor: `${path.accent}15`,
                   color: path.accent,
                   fontWeight: 600,
-                  height: 24
+                  height: 26,
+                  px: 1.5
                 }}
               />
               <Typography variant="h6" sx={{ mb: 0.5, fontWeight: 600 }}>
                 {path.title}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
+              <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
                 {path.body}
               </Typography>
             </Box>
@@ -139,9 +146,9 @@ const LoginPage = () => {
   const frostedCard = {
     borderRadius: 4,
     border: '1px solid rgba(15,23,42,0.08)',
-    boxShadow: '0 28px 80px rgba(15,23,42,0.15)',
-    backgroundColor: 'rgba(255,255,255,0.92)',
-    backdropFilter: 'blur(16px)'
+    boxShadow: '0 20px 60px rgba(15,23,42,0.12)',
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    backdropFilter: 'blur(20px)'
   };
 
   return (
@@ -149,10 +156,22 @@ const LoginPage = () => {
       sx={{
         minHeight: '100vh',
         py: { xs: 6, md: 10 },
-        background: 'linear-gradient(135deg, #FFF5F7 0%, #F8FBFF 60%, #EEF2FF 100%)'
+        background: 'linear-gradient(135deg, #FFF5F7 0%, #F8FBFF 60%, #EEF2FF 100%)',
+        position: 'relative',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'radial-gradient(circle at 20% 50%, rgba(255,77,109,0.05) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(14,165,233,0.05) 0%, transparent 50%)',
+          pointerEvents: 'none',
+          zIndex: 0
+        }
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         <Grid container spacing={6} alignItems="center">
           <Grid item xs={12} md={6}>
             <Stack spacing={3}>
@@ -161,37 +180,52 @@ const LoginPage = () => {
                 size="small"
                 sx={{
                   alignSelf: 'flex-start',
-                  bgcolor: 'primary.50',
+                  bgcolor: alpha(theme.palette.primary.main, 0.1),
                   color: 'primary.main',
-                  fontWeight: 600
+                  fontWeight: 600,
+                  px: 2,
+                  py: 0.5,
+                  borderRadius: 2
                 }}
               />
-              <Typography variant="h1" sx={{ fontSize: { xs: '2.5rem', md: '3.5rem' }, fontWeight: 800, lineHeight: 1.2 }}>
+              <Typography
+                variant="h1"
+                sx={{
+                  fontSize: { xs: '2.5rem', md: '3.5rem' },
+                  fontWeight: 800,
+                  lineHeight: 1.2,
+                  background: `linear-gradient(135deg, ${theme.palette.text.primary} 0%, ${alpha(theme.palette.primary.main, 0.8)} 100%)`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text'
+                }}
+              >
                 {t('pages.login.title')}
               </Typography>
-              <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 400, maxWidth: 550 }}>
+              <Typography variant="h6" color="text.secondary" sx={{ fontWeight: 400, maxWidth: 550, lineHeight: 1.7 }}>
                 {t('pages.login.description')}
               </Typography>
 
-              <Box sx={{ ...frostedCard, p: 3 }}>
-                <Stack direction="row" spacing={2} alignItems="center">
+              <Box sx={{ ...frostedCard, p: 3.5 }}>
+                <Stack direction="row" spacing={2.5} alignItems="center">
                   <Box
                     sx={{
                       bgcolor: 'primary.main',
-                      borderRadius: 1,
-                      p: 1.5,
+                      borderRadius: 2,
+                      p: 2,
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center'
+                      justifyContent: 'center',
+                      boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.3)}`
                     }}
                   >
-                    <LockIcon sx={{ color: '#fff', fontSize: 24 }} />
+                    <LockIcon sx={{ color: '#fff', fontSize: 28 }} />
                   </Box>
                   <Box>
                     <Typography variant="subtitle1" sx={{ mb: 0.5, fontWeight: 600 }}>
                       Secure & Protected
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
                       {t('pages.login.otpInfo')}
                     </Typography>
                   </Box>
@@ -205,7 +239,7 @@ const LoginPage = () => {
           </Grid>
         </Grid>
 
-        <Box sx={{ mt: { xs: 6, md: 8 } }}>
+        <Box sx={{ mt: { xs: 8, md: 10 } }}>
           <Card
             component="form"
             onSubmit={handleSubmit}
@@ -218,24 +252,25 @@ const LoginPage = () => {
             <CardContent sx={{ p: { xs: 4, md: 5 } }}>
               <Stack spacing={4}>
                 <Box>
-                  <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 3 }}>
+                  <Stack direction="row" spacing={2.5} alignItems="center" sx={{ mb: 3 }}>
                     <Box
                       sx={{
                         bgcolor: 'primary.main',
-                        borderRadius: 1,
-                        p: 1.5,
+                        borderRadius: 2,
+                        p: 2,
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
+                        boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.3)}`
                       }}
                     >
-                      <PhoneIcon sx={{ color: '#fff', fontSize: 24 }} />
+                      <PhoneIcon sx={{ color: '#fff', fontSize: 28 }} />
                     </Box>
                     <Box>
                       <Typography variant="h4" sx={{ mb: 0.5, fontWeight: 700 }}>
                         {t('pages.login.continue')}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.6 }}>
                         {t('pages.login.helper')}
                       </Typography>
                     </Box>
@@ -263,7 +298,15 @@ const LoginPage = () => {
                   sx={{
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
-                      backgroundColor: 'rgba(248,250,252,0.95)'
+                      backgroundColor: 'rgba(248,250,252,0.95)',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        backgroundColor: 'rgba(248,250,252,1)'
+                      },
+                      '&.Mui-focused': {
+                        backgroundColor: '#fff',
+                        boxShadow: `0 0 0 3px ${alpha(theme.palette.primary.main, 0.1)}`
+                      }
                     }
                   }}
                 />
@@ -273,11 +316,11 @@ const LoginPage = () => {
                   icon={<LockIcon />}
                   sx={{
                     borderRadius: 2,
-                    bgcolor: 'primary.50',
-                    border: `1px solid ${theme.palette.primary.main}20`
+                    bgcolor: alpha(theme.palette.primary.main, 0.08),
+                    border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`
                   }}
                 >
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: 1.6 }}>
                     {t('phone.maskedBanner')}
                   </Typography>
                 </Alert>
@@ -289,17 +332,23 @@ const LoginPage = () => {
                   fullWidth
                   endIcon={<ArrowForwardIcon />}
                   sx={{
-                    py: 1.5,
+                    py: 1.75,
                     fontSize: '1rem',
                     fontWeight: 600,
                     borderRadius: 2,
-                    textTransform: 'none'
+                    textTransform: 'none',
+                    boxShadow: `0 8px 24px ${alpha(theme.palette.primary.main, 0.3)}`,
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: `0 12px 32px ${alpha(theme.palette.primary.main, 0.4)}`
+                    },
+                    transition: 'all 0.3s ease'
                   }}
                 >
                   {t('pages.login.continue')}
                 </Button>
 
-                <Divider />
+                <Divider sx={{ my: 1 }} />
 
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                   <Button
@@ -310,13 +359,17 @@ const LoginPage = () => {
                       py: 1.5,
                       borderRadius: 2,
                       borderColor: '#FF4D6D',
+                      borderWidth: 2,
                       color: '#FF4D6D',
                       fontWeight: 600,
                       textTransform: 'none',
                       '&:hover': {
                         borderColor: '#E63E60',
-                        bgcolor: '#FF4D6D10'
-                      }
+                        borderWidth: 2,
+                        bgcolor: alpha('#FF4D6D', 0.08),
+                        transform: 'translateY(-2px)'
+                      },
+                      transition: 'all 0.3s ease'
                     }}
                   >
                     {t('pages.login.loginProvider')}
@@ -329,13 +382,17 @@ const LoginPage = () => {
                       py: 1.5,
                       borderRadius: 2,
                       borderColor: '#0EA5E9',
+                      borderWidth: 2,
                       color: '#0EA5E9',
                       fontWeight: 600,
                       textTransform: 'none',
                       '&:hover': {
                         borderColor: '#0284C7',
-                        bgcolor: '#0EA5E910'
-                      }
+                        borderWidth: 2,
+                        bgcolor: alpha('#0EA5E9', 0.08),
+                        transform: 'translateY(-2px)'
+                      },
+                      transition: 'all 0.3s ease'
                     }}
                   >
                     {t('pages.login.loginClient')}

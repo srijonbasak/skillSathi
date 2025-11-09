@@ -229,12 +229,13 @@ const en = {
           title: 'Sathi — search & briefs for clients',
           preview: 'Browse gigs, save favourites, and send requests without sharing your number.',
           detail:
-            'Sathi keeps the experience calm and blue-sky: search curated gigs, read masked provider stories, and start safe chats in Bangla or English.',
+            'Sathi keeps the experience calm and blue-sky: search curated gigs, read masked provider stories, and start safe chats in Bangla or English. It opens an easy and secure path for all clients.',
           bullets: [
             'Filter by category, price, and availability to find the right provider quickly.',
             'Tap masked profiles with trust badges and verified skills.',
             'Send request briefs or open masked chats that stay inside SkillSathi.'
-          ]
+          ],
+          note: 'Sathi chat is available to all clients, so they can safely find providers and start masked conversations.'
         },
         sokti: {
           tag: 'Pink helper',
