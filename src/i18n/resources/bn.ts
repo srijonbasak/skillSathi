@@ -1,6 +1,6 @@
 const bn = {
   brand: {
-    name: 'স্কিলসাথি',
+    name: 'স্কিলসাথী',
     tagline: 'নারীর প্রতিভা আয়ের রাস্তায়'
   },
   a11y: {
@@ -671,3 +671,4 @@ const bn = {
 };
 
 export default bn;
+

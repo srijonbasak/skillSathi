@@ -61,7 +61,7 @@ const AISuggestionPanel = ({
             >
               <PriceChangeIcon color="primary" />
               <Typography variant="body1" fontWeight={600}>
-                {t('ai.suggestedPrice')}: ৳{price.toLocaleString()}
+                {t('ai.suggestedPrice')}: Tk {price.toLocaleString()}
               </Typography>
             </Stack>
           )}
@@ -85,3 +85,4 @@ const AISuggestionPanel = ({
 };
 
 export default AISuggestionPanel;
+
